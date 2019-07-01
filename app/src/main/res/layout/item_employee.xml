@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="@dimen/dp_32"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_8"
+    app:cardMaxElevation="@dimen/dp_8">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_id"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            tools:text="1"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_name"
+            style="@style/FieldItem"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_toEndOf="@id/text_id"
+            tools:text="dbasbdkjbasjkdbjkasbdkjbaskjdbkasj"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_address"
+            style="@style/FieldItem"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_toEndOf="@id/text_name"
+            tools:text="duiahsidhiasudhuiashdiuashiudhasuihd"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_phone"
+            style="@style/FieldItem"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_toEndOf="@id/text_address"
+            tools:text="0921896745"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/image_delete"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_delete"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/image_edit"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_toEndOf="@id/text_phone"
+            android:src="@drawable/ic_edit"/>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

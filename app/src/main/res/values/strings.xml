@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SqliteRoomSample</string>
+    <string name="demo_sqlite">Demo Sqlite</string>
+    <string name="demo_room">Demo Room</string>
+    <string name="create_table">Create Table</string>
+    <string name="insert_data">Insert Employee</string>
+    <string name="read_data">Read Data</string>
+    <string name="update_data">Update Data</string>
+    <string name="delete_data">Delete Data</string>
+    <string name="hint_name">Name employee</string>
+    <string name="hint_address">Address employee</string>
+    <string name="hint_phone">Phone number</string>
+</resources>
