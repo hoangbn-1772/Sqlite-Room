@@ -4,11 +4,13 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.sqliteroomsample"
-        minSdkVersion 20
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -20,6 +22,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+kapt {
+    generateStubs = true
 }
 
 dependencies {
@@ -34,7 +49,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
 
     /*Room*/
     def room_version = "2.1.0"
@@ -44,4 +58,15 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$room_version"
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    def lifecycle_version = "2.2.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    //Koin
+    implementation "org.koin:koin-androidx-scope:2.0.0-rc-2"
+    implementation "org.koin:koin-androidx-viewmodel:2.0.0-rc-2"
 }

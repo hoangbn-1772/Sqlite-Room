@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.example.sqliteroomsample.R
+import com.example.sqliteroomsample.ui.activity.room.RoomActivity
+import com.example.sqliteroomsample.ui.activity.sqlite.SQLiteActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {

@@ -1,4 +1,4 @@
-# Sqlite-Room
+﻿# Sqlite-Room
 
 ## Sqlite
 - Là một CSDL mã nguồn mở, được tích hợp sẵn trên thiết bị Android. Không cần phải thiết lập bất cứ kết nối nào để truy vấn dữ liệu.
@@ -52,6 +52,22 @@
 - Sử dụng để truy cập dữ liệu. Mỗi DAO bao gồm tập hợp các phương thức để thao tác với dữ liệu.
 - GenderDao.kt
 	<img src="images/gender_dao.png"/>
+	
+	+ Trong trường hợp *insert* or *update*, có thể sử dụng thuộc tính *onConflict* để cho biết phải làm gì khi xảy ra xung đột khi thực hiện thao tác. Các chiến lược có thể sử dụng như: REPLACE, ABORT, FAIL, IGNORE, ROLLBACK
+	+ Nếu cú pháp câu lệnh SQL nó sẽ báo ở compile time.
+
+#### Type Converters
+- Được sử dụng khi chúng ta khai báo thuộc tính mà Room và SQL không thể tuần tự hóa.
+- DateTypeConverter.kt:
+	<img src="images/date_type_converter.png"/>
+
+#### Database
+- Đại diện cho DB, nó giữ một kết nối đến SQLite DB.
+	+ Là một abstract class kế thừa từ RoomDatabase. Được chú thích bởi @Database.
+	+ Nó nhận được một danh sách các thực thể với tất cả các lớp tạo CSDL (tất cả các lớp có chú thích @Entity)
+	+ Chúng ta phải khai báo một hàm abstract cho mỗi Entity, hàm này phải trả về giá trị tương ứng DAO (Lớp được chú thích là @Dao)
+
+#### Sử dụng Room.
 
 ## Tài liệu tham khảo
 - SQLite:

@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFFFFF"
-                tools:context=".ui.activity.SQLiteActivity">
+                tools:context=".ui.activity.sqlite.SQLiteActivity">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_insert_data"

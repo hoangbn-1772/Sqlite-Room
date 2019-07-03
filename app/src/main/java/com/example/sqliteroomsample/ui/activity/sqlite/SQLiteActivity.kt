@@ -1,4 +1,4 @@
-package com.example.sqliteroomsample.ui.activity
+package com.example.sqliteroomsample.ui.activity.sqlite
 
 import android.os.Bundle
 import android.view.View

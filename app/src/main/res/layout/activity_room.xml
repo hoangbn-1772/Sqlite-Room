@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.RoomActivity">
+    tools:context=".ui.activity.room.RoomActivity">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhap gioi tinh" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_insert_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/room_btn_insert"/>
+        android:layout_below="@id/edit_name"
+        android:text="@string/room_btn_insert" />
 
 </RelativeLayout>
