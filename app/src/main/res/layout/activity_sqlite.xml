@@ -13,17 +13,25 @@
         android:text="@string/insert_data"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_read_data"
-        android:layout_width="match_parent"
+        android:id="@+id/btn_read_all_data"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_insert_data"
         android:text="@string/read_data"/>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_read_data_by_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_insert_data"
+        android:layout_toEndOf="@id/btn_read_all_data"
+        android:text="@string/read_data_by_id"/>
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_update_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_read_data"
+        android:layout_below="@id/btn_read_all_data"
         android:text="@string/update_data"/>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -37,6 +45,7 @@
         android:id="@+id/recycler_employees"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btn_delete_data"/>
+        android:layout_below="@id/btn_delete_data"
+        android:layout_margin="@dimen/dp_8"/>
 
 </RelativeLayout>

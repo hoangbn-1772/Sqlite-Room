@@ -6,8 +6,7 @@
     android:layout_width="match_parent" android:layout_height="@dimen/dp_32"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_8"
-    app:cardMaxElevation="@dimen/dp_8">
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,6 +43,7 @@
             android:layout_width="@dimen/dp_96"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_4"
+            android:layout_toStartOf="@id/image_edit"
             android:layout_toEndOf="@id/text_address"
             tools:text="0921896745"/>
 
@@ -58,8 +58,8 @@
             android:id="@+id/image_edit"
             android:layout_width="@dimen/dp_32"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_24"
-            android:layout_toEndOf="@id/text_phone"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_toStartOf="@id/image_delete"
             android:src="@drawable/ic_edit"/>
 
     </RelativeLayout>

@@ -5,11 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sqliteroomsample.R
-import com.example.sqliteroomsample.data.model.Employee
+import com.example.sqliteroomsample.data.model.sqlite.Employee
 import kotlinx.android.synthetic.main.item_employee.view.*
 
-class SQLiteAdapter(private var employees: List<Employee>)
+class SQLiteAdapter(private var employees: List<Employee>?)
     : RecyclerView.Adapter<SQLiteAdapter.ViewHolder>() {
+
+    fun updateEmployees(employees: List<Employee>) {
+        this.employees = employees
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -21,11 +25,11 @@ class SQLiteAdapter(private var employees: List<Employee>)
     }
 
     override fun getItemCount(): Int {
-        return if (employees.isNullOrEmpty()) 1 else 0
+        return if (!employees.isNullOrEmpty()) employees?.size!! else 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.onBind(employees[position])
+        employees?.get(position)?.let { holder.onBind(it) }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

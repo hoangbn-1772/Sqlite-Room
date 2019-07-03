@@ -1,4 +1,4 @@
-package com.example.sqliteroomsample.data.model
+package com.example.sqliteroomsample.data.model.sqlite
 
 data class Employee(
         val id: Int = 0,

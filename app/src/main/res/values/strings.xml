@@ -5,9 +5,13 @@
     <string name="create_table">Create Table</string>
     <string name="insert_data">Insert Employee</string>
     <string name="read_data">Read Data</string>
+    <string name="read_data_by_id">Read Data By ID</string>
     <string name="update_data">Update Data</string>
     <string name="delete_data">Delete Data</string>
     <string name="hint_name">Name employee</string>
     <string name="hint_address">Address employee</string>
     <string name="hint_phone">Phone number</string>
+
+    <!--Room-->
+    <string name="room_btn_insert">Insert User</string>
 </resources>
