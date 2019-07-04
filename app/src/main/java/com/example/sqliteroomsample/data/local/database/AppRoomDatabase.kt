@@ -4,45 +4,30 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.example.sqliteroomsample.data.local.dao.ExerciseDao
-import com.example.sqliteroomsample.data.local.dao.GenderDao
-import com.example.sqliteroomsample.data.local.dao.RoutineDao
-import com.example.sqliteroomsample.data.local.dao.TraineeDao
-import com.example.sqliteroomsample.data.model.room.Exercise
-import com.example.sqliteroomsample.data.model.room.Gender
-import com.example.sqliteroomsample.data.model.room.Routine
-import com.example.sqliteroomsample.data.model.room.Trainee
-import com.example.sqliteroomsample.util.DateTypeConverter
-import com.example.sqliteroomsample.util.ListConverter
+import com.example.sqliteroomsample.data.local.dao.UserDao
+import com.example.sqliteroomsample.data.model.room.User
 
-@Database(
-    entities = [Gender::class, Exercise::class, Routine::class, Trainee::class],
-    version = AppRoomDatabase.DATABASE_VERSION
-)
-@TypeConverters(DateTypeConverter::class, ListConverter::class)
+@Database(entities = [User::class], version = AppRoomDatabase.DATABASE_VERSION)
 abstract class AppRoomDatabase : RoomDatabase() {
 
-    abstract fun genderDao(): GenderDao
-
-    abstract fun exerciseDao(): ExerciseDao
-
-    abstract fun routineDao(): RoutineDao
-
-    abstract fun traineeDao(): TraineeDao
+    abstract fun userDao(): UserDao
 
     companion object {
         const val DATABASE_VERSION = 1
 
         private const val DATABASE_NAME = "sun_room.db"
 
+        @Volatile
         private var INSTANCE: AppRoomDatabase? = null
 
         fun getInstance(context: Context): AppRoomDatabase = INSTANCE
-            ?: synchronized(AppRoomDatabase::class) {
-                Room.databaseBuilder(context.applicationContext, AppRoomDatabase::class.java, DATABASE_NAME)
-                    .build()
-            }
+                ?: synchronized(AppRoomDatabase::class) {
+                    INSTANCE ?: Room.databaseBuilder(
+                            context.applicationContext,
+                            AppRoomDatabase::class.java,
+                            DATABASE_NAME
+                    ).build()
+                }
 
         fun destroyDatabase() {
             INSTANCE = null

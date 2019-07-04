@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activity.room.RoomActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.activity.room.RoomActivity">
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhap gioi tinh" />
+        android:hint="Nhap ten"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_name"
+        android:hint="Nhap dia chi"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_insert_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edit_name"
-        android:text="@string/room_btn_insert" />
+        android:layout_below="@id/edit_address"
+        android:text="@string/room_btn_insert"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_get_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_insert_room"
+        android:text="Get Users"/>
 
 </RelativeLayout>

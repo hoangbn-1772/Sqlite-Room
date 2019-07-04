@@ -6,10 +6,9 @@ import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.sqliteroomsample.R
-import com.example.sqliteroomsample.data.model.room.Gender
+import com.example.sqliteroomsample.data.model.room.User
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
-import kotlinx.android.synthetic.main.activity_room.btn_insert_room
-import kotlinx.android.synthetic.main.activity_room.edit_name
+import kotlinx.android.synthetic.main.activity_room.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RoomActivity : AppCompatActivity(), OnClickListener {
@@ -26,22 +25,34 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_insert_room -> insertGender()
+            R.id.btn_get_users -> getUsers()
         }
     }
 
     private fun initComponent() {
         btn_insert_room?.setOnClickListener(this)
+
+        btn_get_users.setOnClickListener(this)
     }
 
     private fun doObserve() {
-        viewModel.genderLiveData.observe(this, Observer {
+        viewModel.insertUserLiveData.observe(this, Observer {
             showMessage(it)
+        })
+
+        viewModel.getUserLiveDate.observe(this, Observer {
+            showMessage(it.toString())
         })
     }
 
     private fun insertGender() {
         val name = edit_name.text.toString()
-        val gender = Gender(name = name)
-        viewModel.insertGender(gender)
+        val address = edit_address.text.toString()
+        val user = User(name = name, address = address)
+        viewModel.insertGender(user)
+    }
+
+    private fun getUsers() {
+        viewModel.getUser()
     }
 }
