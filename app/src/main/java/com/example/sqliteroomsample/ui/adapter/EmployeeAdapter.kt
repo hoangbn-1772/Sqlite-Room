@@ -8,8 +8,8 @@ import com.example.sqliteroomsample.R
 import com.example.sqliteroomsample.data.model.sqlite.Employee
 import kotlinx.android.synthetic.main.item_employee.view.*
 
-class SQLiteAdapter(private var employees: List<Employee>?)
-    : RecyclerView.Adapter<SQLiteAdapter.ViewHolder>() {
+class EmployeeAdapter(private var employees: List<Employee>?)
+    : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
 
     fun updateEmployees(employees: List<Employee>) {
         this.employees = employees

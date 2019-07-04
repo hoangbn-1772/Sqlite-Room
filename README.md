@@ -10,7 +10,14 @@
 
 ## Room
 - Room là một phần trong Android Architecture Components được giới thiệu trong Google I/O 2016.
-- Room là một thư viện lưu trữ dữ liệu lâu dài cung cấp một lớp trừu tượng trên SQLite để cho phép truy cập CSDL mạnh mẽ hơn trong khi khai thác toàn bộ sức mạnh của SQLite.
+- Room là Persistence Library cung cấp abstract layer cung cấp cách thức truy cập thao tác với dữ liệu trong CSDL SQLite.
+
+- Lợi thế của Room
+	+ Kiểm tra @Query và @Entity ở compile-time, ngoài kiểm tra cú pháp nó còn kiểm tra được các trường hợp khác như thiếu bảng.
+	+ Không phải viết các câu lệnh dài để tạo database
+	+ Khi lược đồ CSDL thay đổi không phải cập nhật lại các câu truy vấn SQL thủ công.
+	+ Tích hợp đầy đủ với các thành phần khác trong Architecture components (như LiveData)
+
 - Room có 3 thành phần chính:
 
 <img src="images/room_component.png"/>
@@ -19,25 +26,27 @@
 	+ Entity: Đại diện cho 1 bảng trong database. Chú thích bằng annotated @Entity
 	+ DAO: Là một Interface chứa các phương thức để truy cập vào database. Được chú thích bằng @Dao
 
-### Lợi thế của Room
-- Kiểm tra @Query và @Entity ở compile-time, ngoài kiểm tra cú pháp nó còn kiểm tra được các trường hợp khác như thiếu bảng.
-- Code soạn sẵn ít
-- Tích hợp đầy đủ với các thành phần khác trong Architecture components (như LiveData)
+### Ví dụ: Lưu trữ thông tin của user
 
-### How do use it
-- Ví dụ: chúng ta xây dựng ứng dụng để lưu trữ thông tin User
 - Đầu tiên, ta thêm thư viện Room.
 
 <img src="images/room_library.png"/>
 
 #### Entities
-- Được chú thích bằng annotation *@Entity*. Việc thiết kế bảng với các cột trở nên dễ dàng.
-- User.kt: Giới tính của trainee
+- Được chú thích bằng annotation *@Entity*.
+- Với mỗi Entity thì một database table sẽ được tạo.
+- Các Entity có thể có các hàm khởi đầy đủ hoặc rỗng, Room có thể sử dụng các hàm khởi tạo đầy đủ hoặc một phần.
+
+- User.kt:
 	<img src="images/user_entities.png"/>
 
 	+ annotation *@PrimaryKey(autoGenerate = true)*: chỉ ra đây là khóa chính và sẽ tự động tăng.
 	+ Mặc định, Room sử dụng tên các trường làm tên cột, nếu muốn đặt tên cột khác ta sử dụng annotation *@ColumnInfo*
 	+ Khi class được chú thích là @Entity thì tên của bảng sẽ là tên của class, nếu muốn đặt tên bảng khác ta có thể thêm thuộc tính *tableName* trong @Entity
+	+ @Ignore: Trường có annotation này sẽ không được lưu vào database.
+	+ indices: Sử dụng nếu bạn muốn đánh dấu trường trong database để tăng tốc độ truy vấn.
+	+ unique: Sử dụng nếu bạn muốn trường đó là duy nhất trong DB (không trùng nhau)
+	+ @Embedded: Sử dụng trong trường hợp bạn tạo ra 1 Object với các nested object, không muốn lưu chúng thành một bảng riêng mà đơn giản chỉ giống như 1 column bình thường.
 
 #### DAOs (Data Access Object)
 - Sử dụng để truy cập dữ liệu. Mỗi *DAO* bao gồm tập hợp các phương thức để thao tác với dữ liệu. Được chú thích bằng anotation *@Dao*
@@ -95,3 +104,4 @@
 	+ Google Sample: https://github.com/googlesamples/android-architecture-components
 	+ Room + Rx: https://medium.com/androiddevelopers/room-rxjava-acb0cd4f3757
 	+ SQLite to Room: https://medium.com/androiddevelopers/7-steps-to-room-27a5fe5f99b2
+	+ https://viblo.asia/p/android-gioi-thieu-room-persistence-library-maGK7zne5j2

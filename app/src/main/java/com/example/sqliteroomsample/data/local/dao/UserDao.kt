@@ -33,7 +33,7 @@ interface UserDao {
     fun getGenders(): Single<List<User>>
 
     companion object {
-        private const val GET_GENDERS = "SELECT * FROM ${Global.TABLE_GENDER}"
-        private const val GET_GENDER_BY_NAME = "SELECT * FROM ${Global.TABLE_GENDER} WHERE name = :name"
+        private const val GET_GENDERS = "SELECT * FROM ${Global.TABLE_USER}"
+        private const val GET_GENDER_BY_NAME = "SELECT * FROM ${Global.TABLE_USER} WHERE name = :name"
     }
 }

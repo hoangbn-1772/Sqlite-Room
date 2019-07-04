@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_32"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_user_id"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_user_name"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/text_user_id" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_user_address"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/text_user_name" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/img_delete_user"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_delete" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/img_update_user"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@id/img_delete_user"
+            android:src="@drawable/ic_edit" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

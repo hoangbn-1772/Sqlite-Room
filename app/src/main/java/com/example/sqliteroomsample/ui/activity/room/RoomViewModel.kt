@@ -18,40 +18,40 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
     val insertUserLiveData: LiveData<String>
         get() = _insertUserLiveData
 
-    private val _getUserLiveData = MutableLiveData<Int>()
+    private val _getUserLiveData = MutableLiveData<List<User>>()
 
-    val getUserLiveDate: LiveData<Int>
+    val getUserLiveDate: LiveData<List<User>>
         get() = _getUserLiveData
 
-    fun insertGender(user: User) {
+    fun insertUser(user: User) {
         compositeDisposable.add(
-                repository.insertUser(user)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                {
-                                    _insertUserLiveData.value = it.toString()
-                                },
-                                {
-                                    _insertUserLiveData.value = it.toString()
-                                }
-                        )
+            repository.insertUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        _insertUserLiveData.value = it.toString()
+                    },
+                    {
+                        _insertUserLiveData.value = it.toString()
+                    }
+                )
         )
     }
 
     fun getUser() {
         compositeDisposable.add(
-                repository.getUsers()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                {
-                                    _getUserLiveData.value = it.size
-                                },
-                                {
-                                    _getUserLiveData.value = 0
-                                }
-                        )
+            repository.getUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { users ->
+                        _getUserLiveData.value = users
+                    },
+                    { error ->
+                        _getUserLiveData.value = mutableListOf()
+                    }
+                )
         )
     }
 

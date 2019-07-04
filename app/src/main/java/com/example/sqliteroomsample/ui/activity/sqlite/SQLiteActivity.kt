@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sqliteroomsample.R
 import com.example.sqliteroomsample.data.local.database.DatabaseHelper
 import com.example.sqliteroomsample.data.model.sqlite.Employee
-import com.example.sqliteroomsample.ui.adapter.SQLiteAdapter
+import com.example.sqliteroomsample.ui.adapter.EmployeeAdapter
 import com.example.sqliteroomsample.ui.dialog.InsertEmployeeDialog
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
 import kotlinx.android.synthetic.main.activity_sqlite.*
@@ -19,7 +19,7 @@ class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployee
 
     private val insertEmployeeDialog by lazy { InsertEmployeeDialog(this) }
 
-    private val employeeAdapter by lazy { SQLiteAdapter(null) }
+    private val employeeAdapter by lazy { EmployeeAdapter(null) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
