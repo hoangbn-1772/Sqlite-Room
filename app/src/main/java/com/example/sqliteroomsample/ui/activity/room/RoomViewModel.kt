@@ -1,5 +1,6 @@
 package com.example.sqliteroomsample.ui.activity.room
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,15 +14,21 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _insertUserLiveData = MutableLiveData<String>()
+    val users: ArrayList<User> = ArrayList()
 
-    val insertUserLiveData: LiveData<String>
+    private val _insertUserLiveData = MutableLiveData<Long>()
+
+    val insertUserLiveData: LiveData<Long>
         get() = _insertUserLiveData
 
-    private val _getUserLiveData = MutableLiveData<List<User>>()
+    private val _getUserLiveData = MutableLiveData<MutableList<User>>()
 
-    val getUserLiveDate: LiveData<List<User>>
+    val getUserLiveDate: LiveData<MutableList<User>>
         get() = _getUserLiveData
+
+    private val _deleteLiveData = MutableLiveData<Int>()
+    val deleteLiveData: LiveData<Int>
+        get() = _deleteLiveData
 
     fun insertUser(user: User) {
         compositeDisposable.add(
@@ -29,11 +36,11 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    {
-                        _insertUserLiveData.value = it.toString()
+                    { rowID ->
+                        _insertUserLiveData.value = rowID
                     },
                     {
-                        _insertUserLiveData.value = it.toString()
+                        _insertUserLiveData.value = -1L
                     }
                 )
         )
@@ -50,6 +57,23 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
                     },
                     { error ->
                         _getUserLiveData.value = mutableListOf()
+                        Log.d("TAG", "Error: $error")
+                    }
+                )
+        )
+    }
+
+    fun deleteUser(user: User) {
+        compositeDisposable.add(
+            repository.deleteUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        _deleteLiveData.value = it
+                    },
+                    {
+                        _deleteLiveData.value = -1
                     }
                 )
         )

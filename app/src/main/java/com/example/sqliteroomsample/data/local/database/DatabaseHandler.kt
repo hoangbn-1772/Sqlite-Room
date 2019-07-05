@@ -64,22 +64,22 @@ class DatabaseHelper private constructor(context: Context)
             val projection = arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_ADDRESS, COLUMN_PHONE_NUMBER)
 
             val cursor = db.query(TABLE_NAME,
-                    projection,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
             )
             with(cursor) {
                 while (moveToNext()) {
                     employees.add(
-                            Employee(
-                                    getInt(getColumnIndexOrThrow(COLUMN_ID)),
-                                    getString(getColumnIndexOrThrow(COLUMN_NAME)),
-                                    getString(getColumnIndexOrThrow(COLUMN_ADDRESS)),
-                                    getString(getColumnIndexOrThrow(COLUMN_PHONE_NUMBER))
-                            )
+                        Employee(
+                            getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                            getString(getColumnIndexOrThrow(COLUMN_NAME)),
+                            getString(getColumnIndexOrThrow(COLUMN_ADDRESS)),
+                            getString(getColumnIndexOrThrow(COLUMN_PHONE_NUMBER))
+                        )
                     )
                 }
                 cursor.close()
@@ -106,13 +106,13 @@ class DatabaseHelper private constructor(context: Context)
             val selectionArgs = arrayOf("$employeeId")
 
             val cursor = db.query(
-                    TABLE_NAME,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    null
+                TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
             )
 
             with(cursor) {
@@ -184,19 +184,19 @@ class DatabaseHelper private constructor(context: Context)
         private const val COLUMN_PHONE_NUMBER = "phone_number"
 
         private const val SQL_CREATE_DB = "CREATE TABLE $TABLE_NAME (" +
-                "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "$COLUMN_NAME TEXT," +
-                "$COLUMN_ADDRESS TEXT," +
-                "$COLUMN_PHONE_NUMBER TEXT )"
+            "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "$COLUMN_NAME TEXT," +
+            "$COLUMN_ADDRESS TEXT," +
+            "$COLUMN_PHONE_NUMBER TEXT )"
 
         private const val SQL_UPGRADE_DB = "DROP TABLE IF EXISTS $TABLE_NAME"
 
         private var instance: DatabaseHelper? = null
 
         fun getInstance(context: Context): DatabaseHelper = instance
-                ?: synchronized(this) {
-            instance
+            ?: synchronized(this) {
+                instance
                     ?: DatabaseHelper(context)
-        }
+            }
     }
 }

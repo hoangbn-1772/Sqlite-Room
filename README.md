@@ -49,8 +49,9 @@
 	+ @Embedded: Sử dụng trong trường hợp bạn tạo ra 1 Object với các nested object, không muốn lưu chúng thành một bảng riêng mà đơn giản chỉ giống như 1 column bình thường.
 
 #### DAOs (Data Access Object)
-- Sử dụng để truy cập dữ liệu. Mỗi *DAO* bao gồm tập hợp các phương thức để thao tác với dữ liệu. Được chú thích bằng anotation *@Dao*
+- Được chú thích bằng anotation *@Dao*, đây là thành phần chính của Room chịu trách nhiệm trong việc định nghĩa các phương thức truy cập CSDL.
 - Một *DAO* có thể được thể hiện như một *interface* hoặc *abstract*
+- Khi code được sinh ra ở thời điểm compile-time thì Room sẽ tạo một implementation của class này.
 - UserDao.kt
 	<img src="images/user_dao.png"/>	
 	
@@ -59,26 +60,55 @@
 	+ *@Query*: Lấy thông tin của một hoặc nhiều Entity.
 
 #### Database
-- Giữ một kết nối đến SQLite DB.
+- Tạo database holder. Định nghĩa danh sách các DAO của CSDL.
 
 	<img src="images/room_database.png"/>
 
 	+ Được chú thích bởi @Database. Là một abstract class kế thừa từ RoomDatabase. Nó nhận vào một danh sách các thực thể với tất cả các lớp tạo CSDL (tất cả các lớp có chú thích @Entity)
 	+ Chúng ta phải khai báo một hàm abstract cho mỗi Entity, hàm này phải trả về giá trị tương ứng DAO (Lớp được chú thích là @Dao)
 
+### Room với RxJava
+- Điều có lẽ là tuyệt vời nhất của Room là nó sử dụng được sức mạnh của các thành phần trong *Architecture Components*. Các query không đồng bộ trả về *LiveData* hoặc RxJava như *Maybe*, *Single*, *Flowable* và có thể quan sát được. Điều này đảm bảo UI luôn tự đọng cập nhật mới nhất và khớp với Database.
+
+- Insert:
+	+ Completable: Được gọi khi quá trình insert được thực hiện. Trả về một onComplete hoặc Error
+	+ Single<Long> or Maybe<Long>: Giá trị được phát ra là id của hàng được thêm hoặc Error
+	+ Single<List<Long>> or Maybe<List<Long>>: Giá trị phát ra là một danh sách các id của hàng được thêm hoặc Error.
+
+	<img src="images/insert_rx.png"/>
+
+- Update/Delete:
+	+ Complete: Trả về một onComplete hoặc Error
+	+ Sigle<Interger> or Maybe<Integer>: Giá trị phát ra là số lượng hàng bị ảnh hưởng bởi query.
+
+	<img src="images/update_delete_rx.png"/>
+
+- Query:
+	+ Maybe: 
+		+ Khi database rỗng và query không trả về hàng nào sẽ chạy vào complete. 
+		+ Khi database có dữ liệu, dữ liệu được phát ra trong onSuccess và sau đó complete
+		+ Khi dữ liệu updated sau khi Maybe complete, sẽ không có gì xảy ra.
+	+ Single:
+		+ Khi database rỗng và query không trả về row nào, Single sẽ trả về onError()
+		+ Khi database có dữ liệu, Single sẽ trả về onSuccess()
+		+ Nếu dữ liệu updated sau khi Single hoàn thành, sẽ không có gì xảy ra.
+	+ Flowable:
+		+ Khi database rỗng và query không trả về row nào, Flowable không phát ra item, không gọi onNext(), không gọi onError().
+		+ Khi database có dữ liệu, Flowable sẽ trả về trong onNext()
+		+ Khi dữ liệu updated, Flowable tự động phát ra, cho phép cập nhật UI với dữ liệu mới nhất.
+
+	<img src="images/query_rx.png"/>
+
+
 ### Migration với Room
 - Với Room, nếu bạn thay đổi lược đồ CSDL nhưng không nâng cấp version, ứng dụng sẽ bị crash. Nếu bạn nâng cấp version nhưng không cung cấp bất cứ *migration* thì app sẽ bị crash hoặc các bảng CSDL sẽ bị hủy và mất dữ liệu người dùng.
 - Room cho phép chúng ta viết lớp *Migration* để bảo vệ dữ liệu người dùng
 - Room cung cấp một lớp trừu tượng *Migration* để dễ dàng chuyển đổi SQLite. Lớp *Migration* định nghĩa các hành động cần được thực hiện khi chuyển đổi từ version cũ sang version mới.
+- Một thành phần quan trọng trong migration là *identity hash*, chuỗi này được Room sử dụng để xác định duy nhất cho mọi database version.
 
-- Những gì xảy ra khi truy cập vào CSDL lần đầu tiên:
-	+ Room được tạo
-	+ SQLiteOpenHelper.onUpgrade() được gọi và Room kích hoạt *migration*
-	+ Database được mở
-
-#### Chuyển đổi SQLite API code sang Room
+- Các trường hợp có thể xảy ra khi thay đổi CSDL:
 - Giữ nguyên database version -> App crashes
-	+ Room sẽ check định danh của CSDL bằng cách so sánh *identity hash* của version hiện tại với version được lưu trong *room_master_table*. Nhưng vì không có *identity hash* nào được lưu dẫn đến crash (IllegalStateException).
+	+ Room sẽ check định danh của database bằng cách so sánh *identity hash* của version hiện tại với version được lưu trong *room_master_table*. Nhưng vì không có *identity hash* nào được lưu dẫn đến crash (IllegalStateException).
 - Tăng version nhưng không cung cấp *migration* -> App crashes
 	+ Khi chạy lại app, Room sẽ làm như sau: Thử nâng cấp version, nhưng vì không có *migration*, app bị crash với *IllegalStateException*
 - Tăng version, Enable fallbackToDestructiveMigration() -> database bị xóa.
@@ -90,11 +120,29 @@
 	+ Nếu lược đồ CSDL không thay đổi, chỉ cần cung cấp một *empty migration* để Room sử dụng.
 
 #### Migration với các thay đổi lược đồ đơn giản.
-- Ví dụ: Thêm 1 trường vào bảng User. Trong Database cần làm những công việc sau:
-	+ Tăng version 2
-	+ Add 1 Migration từ version 1 lên 2
+- Ví dụ: Thêm 1 trường vào bảng User.
+- Trong Database cần làm những công việc sau:
+	+ Tăng version lên 1
+	+ Add 1 Migration từ version cũ lên mới
 	+ Add *Migration* vào Room database builder
-- Khi 
+
+	<img src="images/simple_schema_changes.png"/>
+
+	+ Quá trình xử lý: Update version, kích hoạt migration, lưu giữ lại data người dùng, cập nhật *identity hash* vào bảng room_master_table.
+
+#### Migration với các thay đổi phức tạp
+- SQLite "ALTER TABLE..." có một số hạn chế, ví dụ như thay đổi id của User từ  Int sang String. Các bước xử lý sẽ là:
+	+ Tạo một bảng tạm thời mới với lược đồ mới
+	+ Sao chép dữ liệu từ bảng cũ sang bảng tạm thời
+	+ Xóa bỏ bảng cũ
+	+ Đổi lại tên của bảng tạm thời thành tên như bảng cũ
+
+	<img src="images/complex_schema_change.png"/>
+
+#### Multiple database version increments
+- Giả sử bạn đang ở version 1 và muốn update lên version 4. Room có thể migration từ version 1 lên version 4 trong 1 bước
+
+<img src="images/multiple_version_increments.png"/>
 
 ## Tài liệu tham khảo
 - SQLite:

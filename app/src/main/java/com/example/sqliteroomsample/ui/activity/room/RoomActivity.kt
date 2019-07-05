@@ -1,6 +1,7 @@
 package com.example.sqliteroomsample.ui.activity.room
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
@@ -10,18 +11,22 @@ import com.example.sqliteroomsample.R
 import com.example.sqliteroomsample.data.model.room.User
 import com.example.sqliteroomsample.ui.adapter.UserAdapter
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
-import kotlinx.android.synthetic.main.activity_room.btn_get_users
-import kotlinx.android.synthetic.main.activity_room.btn_insert_room
-import kotlinx.android.synthetic.main.activity_room.edit_address
-import kotlinx.android.synthetic.main.activity_room.edit_name
-import kotlinx.android.synthetic.main.activity_room.recycler_users
+import kotlinx.android.synthetic.main.activity_room.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RoomActivity : AppCompatActivity(), OnClickListener {
 
     private val viewModel: RoomViewModel by viewModel()
 
-    private val userAdapter by lazy { UserAdapter(ArrayList()) }
+    var user: User? = null
+
+    private val userAdapter by lazy {
+        UserAdapter(
+            viewModel.users,
+            { user -> deleteUser(user) },
+            { user -> updateUser(user) }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +53,19 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
     }
 
     private fun doObserve() {
-        viewModel.insertUserLiveData.observe(this, Observer {
-            showMessage(it)
+        viewModel.insertUserLiveData.observe(this, Observer { rowId ->
+            if (rowId != -1L) {
+                this.user?.let { viewModel.users.add(it) }
+            }
         })
 
-        viewModel.getUserLiveDate.observe(this, Observer { users ->
-            updateUsers(users)
+        viewModel.getUserLiveDate.observe(this, Observer {
+            viewModel.users.removeAll(viewModel.users)
+            viewModel.users.addAll(it)
+        })
+
+        viewModel.deleteLiveData.observe(this, Observer { rowId ->
+            showMessage(rowId.toString())
         })
     }
 
@@ -61,18 +73,24 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
         val name = edit_name.text.toString()
         val address = edit_address.text.toString()
 
-        if (!name.isEmpty() && !address.isEmpty()) {
-            val user = User(name = name, address = address)
-            viewModel.insertUser(user)
+        if (name.isNotEmpty() && address.isNotEmpty()) {
+            this.user = User(name = name, address = address)
+            this.user?.let { viewModel.insertUser(it) }
+
+            edit_name.text?.clear()
+            edit_address.text?.clear()
         }
+    }
+
+    private fun updateUser(user: User) {
+
+    }
+
+    private fun deleteUser(user: User) {
+        viewModel.deleteUser(user)
     }
 
     private fun getUsers() {
         viewModel.getUser()
-    }
-
-    private fun updateUsers(users: List<User>) {
-        showMessage(users.size.toString())
-        userAdapter.updateUsers(users)
     }
 }
