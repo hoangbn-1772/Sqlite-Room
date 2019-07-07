@@ -6,23 +6,19 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.sqliteroomsample.data.model.sqlite.Employee
-import java.lang.Exception
 
-class DatabaseHelper private constructor(context: Context)
-    : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper private constructor(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     /*Create table*/
     override fun onCreate(db: SQLiteDatabase?) {
-
         Log.d("TAG", "onCreate DB")
-
         db?.execSQL(SQL_CREATE_DB)
     }
 
     /*Called when db upgraded: modify column*/
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.d("TAG", "onUpgrade DB")
-
         db?.run {
             execSQL(SQL_UPGRADE_DB)
             onCreate(db)
@@ -59,18 +55,9 @@ class DatabaseHelper private constructor(context: Context)
     fun getAllEmployee(): List<Employee>? {
         val employees = mutableListOf<Employee>()
         val db = readableDatabase
-
         try {
             val projection = arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_ADDRESS, COLUMN_PHONE_NUMBER)
-
-            val cursor = db.query(TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-            )
+            val cursor = db.query(TABLE_NAME, projection, null, null, null, null, null)
             with(cursor) {
                 while (moveToNext()) {
                     employees.add(
@@ -89,7 +76,6 @@ class DatabaseHelper private constructor(context: Context)
         } finally {
             db?.close()
         }
-
         return employees
     }
 
@@ -130,7 +116,7 @@ class DatabaseHelper private constructor(context: Context)
         return employeeName
     }
 
-    fun updateEmployee(newAddress: String): Int {
+    fun updateEmployee(employee: Employee): Int {
         var count = 0
         val db = writableDatabase
         db?.beginTransaction()
@@ -138,11 +124,11 @@ class DatabaseHelper private constructor(context: Context)
         try {
             // New value for one column
             val values = ContentValues().apply {
-                put(COLUMN_ADDRESS, newAddress)
+                put(COLUMN_ADDRESS, employee.address)
             }
 
             val selection = "$COLUMN_ADDRESS = ?"
-            val selectionArgs = arrayOf("BG")
+            val selectionArgs = arrayOf("HN")
 
             count = db.update(TABLE_NAME, values, selection, selectionArgs)
             db.setTransactionSuccessful()
@@ -156,18 +142,20 @@ class DatabaseHelper private constructor(context: Context)
         return count
     }
 
-    fun deleteEmployee(employeeName: String): Int {
+    fun deleteEmployee(employee: Employee): Int {
         var count = 0
         val db = writableDatabase
-
+        db?.beginTransaction()
         try {
             val selection = "$COLUMN_NAME = ?"
-            val selectionArgs = arrayOf(employeeName)
+            val selectionArgs = arrayOf(employee.name)
 
             count = db.delete(TABLE_NAME, selection, selectionArgs)
+            db?.setTransactionSuccessful()
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
+            db?.endTransaction()
             db?.close()
         }
         return count
@@ -184,10 +172,10 @@ class DatabaseHelper private constructor(context: Context)
         private const val COLUMN_PHONE_NUMBER = "phone_number"
 
         private const val SQL_CREATE_DB = "CREATE TABLE $TABLE_NAME (" +
-            "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "$COLUMN_NAME TEXT," +
-            "$COLUMN_ADDRESS TEXT," +
-            "$COLUMN_PHONE_NUMBER TEXT )"
+                "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COLUMN_NAME TEXT," +
+                "$COLUMN_ADDRESS TEXT," +
+                "$COLUMN_PHONE_NUMBER TEXT )"
 
         private const val SQL_UPGRADE_DB = "DROP TABLE IF EXISTS $TABLE_NAME"
 

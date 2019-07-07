@@ -2,11 +2,60 @@
 
 ## Sqlite
 - Là một CSDL mã nguồn mở, được tích hợp sẵn trên thiết bị Android. Không cần phải thiết lập bất cứ kết nối nào để truy vấn dữ liệu.
+- Truy cập vào CSDL SQLite liên quan đến việc truy cập vào hệ thống tệp tin, điều này có thể làm chậm. Vì vậy nó được khuyến khích để thực hiện các hoạt động cơ sở dữ liệu không đồng bộ.
+- Mặc định CSDL được lưu trữ trong thư mục: *DATA/data/APP_NAME/databases/FILE_NAME*
 - SQLite có các ưu điểm sau:
 	+ Độ tin cậy cao: các hoạt động transaction nội trong CSDL được thực hiện trọn vẹn, không gây lỗi khi xảy ra sự cố phần cứng.
 	+ Không cần cài đặt cấu hình
 	+ Kích thước gọn nhẹ, thao tác đơn giản, nhanh hơn các hệ thống CSDL khách/chủ
 	+ Không cần phần mềm phụ trợ.
+
+### Sử dụng SQLite trong Android
+- Ví dụ: Lưu trữ thông tin nhân viên của công ty gồm các thuộc tính: id, tên, địa chỉ, số điện thoại.
+
+- Tạo class Employee:
+	<img src="images/employee.png"/>
+
+- Tạo class DatabaseHelper:
+	+ Kế thừa class SQLiteOpenHelper (Đây là một class mà Android cho phép bạn xử lý các thao tác với database của SQLite)
+	+ Sau đó cần override lại 2 phương thức: onCreate()-đây là nơi để bạn viết câu lệnh tạo bảng, nó được gọi duy nhất một lần, onUpgrade()-được gọi khi database được nâng cấp.
+
+	<img src=""images/database_helper.png/>
+
+- Câu lệnh insert:
+	+ Tạo phương thức tên là *insertEmployee* với tham số truyền vào là employee
+	+ Đối tượng *ContentValues* được sử dụng để lưu các giá trị tương ứng với các trường trong bảng.
+	+ Sử dụng hàm *insert* của SQLiteDatabase để thực hiện thêm mới.
+	+ Giá trị trả về của câu lệnh là id của hàng mới được thêm vào hoặc -1 nếu xảy ra lỗi
+
+	<img src="images/insert.png"/>
+
+- Câu lệnh truy vấn dữ liệu trong bảng
+	+ Tạo method *getAllEmployee* để lấy ra toàn bộ Employee trong CSDL
+	+ Đối tượng *Cursor* được sử dụng để lưu giá trị trả về của truy vấn.
+	
+	<img src="images/get_all_employee.png"/>
+
+- Câu lệnh update:
+	+ Tạo phương thức *updateEmployee* với tham số truyền vào là employee
+	+ Hàm update của SQLiteDatabase được sử dụng để cập nhật dữ liệu trong bảng theo một điều kiện nào đó.
+	+ Giá trị trả về của câu lệnh là số lượng hàng bị ảnh hưởng	
+
+	<img src="images/update_employee.png/">
+
+- Câu lệnh delete:
+	+ Tạo phương thức *deleteEmployee* để xóa một hàng
+	+ Hàm delete của SQLiteDatabase được sử dụng để xóa dữ liệu của một hoặc nhiều hàng trong bảng theo điều kiện nào đó.
+	+ Giá trị trả về của câu lệnh là số lượng hàng bị ảnh hưởng
+
+	<img src="images/delete_employee.png"/>
+
+### Migration với SQLite
+- Việc cập nhật database với các phiên bản có thể xảy ra các trường hợp sau:
+	+ Khi cài đặt ứng dụng mà chưa có version 1 thì hàm onCreate() sẽ được gọi để tạo CSDL
+	+ Khi cập nhật version thì hàm onUpgrade() sẽ được gọi
+- Để cập nhật database lên version mới nhất là viết câu lệnh SQL và thực hiện câu lệnh trong hàm *onUpgrade()* để lấy dữ liệu cũ rồi cập nhật vào bảng mới.
+- Việc cập nhật sẽ được thực hiện thủ công đối với từng version
 
 ## Room
 - Room là một phần trong Android Architecture Components được giới thiệu trong Google I/O 2016.
@@ -143,6 +192,8 @@
 - Giả sử bạn đang ở version 1 và muốn update lên version 4. Room có thể migration từ version 1 lên version 4 trong 1 bước
 
 <img src="images/multiple_version_increments.png"/>
+
+### Room và Time
 
 ## Tài liệu tham khảo
 - SQLite:

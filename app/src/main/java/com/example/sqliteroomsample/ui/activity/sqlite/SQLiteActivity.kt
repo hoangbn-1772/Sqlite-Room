@@ -10,8 +10,10 @@ import com.example.sqliteroomsample.data.model.sqlite.Employee
 import com.example.sqliteroomsample.ui.adapter.EmployeeAdapter
 import com.example.sqliteroomsample.ui.dialog.InsertEmployeeDialog
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
-import kotlinx.android.synthetic.main.activity_sqlite.*
-
+import kotlinx.android.synthetic.main.activity_sqlite.btn_insert_data
+import kotlinx.android.synthetic.main.activity_sqlite.btn_read_all_data
+import kotlinx.android.synthetic.main.activity_sqlite.btn_read_data_by_id
+import kotlinx.android.synthetic.main.activity_sqlite.recycler_employees
 
 class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployeeDialog.OnSaveEmployee {
 
@@ -19,7 +21,12 @@ class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployee
 
     private val insertEmployeeDialog by lazy { InsertEmployeeDialog(this) }
 
-    private val employeeAdapter by lazy { EmployeeAdapter(null) }
+    private val employeeAdapter by lazy {
+        EmployeeAdapter(mutableListOf(),
+            { employee -> update(employee) },
+            { employee -> delete(employee) }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +39,6 @@ class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployee
             R.id.btn_insert_data -> insertEmployee()
             R.id.btn_read_all_data -> getAllEmployee()
             R.id.btn_read_data_by_id -> getEmployeeById(2)
-            R.id.btn_update_data -> updateEmployee()
-            R.id.btn_delete_data -> deleteEmployeeByName("hoang")
         }
     }
 
@@ -54,8 +59,6 @@ class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployee
         btn_insert_data?.setOnClickListener(this)
         btn_read_all_data?.setOnClickListener(this)
         btn_read_data_by_id.setOnClickListener(this)
-        btn_update_data?.setOnClickListener(this)
-        btn_delete_data?.setOnClickListener(this)
     }
 
     private fun insertEmployee() {
@@ -78,21 +81,16 @@ class SQLiteActivity : AppCompatActivity(), View.OnClickListener, InsertEmployee
         showMessage(employeeName)
     }
 
-    private fun delete() {
-
-    }
-
-    private fun updateEmployee() {
-        val count = databaseHelper.updateEmployee("HN")
+    private fun delete(employee: Employee) {
+        val count = databaseHelper.deleteEmployee(employee)
         showMessage(count.toString())
     }
 
-    private fun deleteEmployeeByName(employeeName: String) {
-        val count = databaseHelper.deleteEmployee(employeeName)
+    private fun update(employee: Employee) {
+        val emp = Employee(employee.id, employee.name, "BG", employee.phone)
+        val count = databaseHelper.updateEmployee(emp)
         showMessage(count.toString())
     }
 
-    companion object {
-
-    }
+    companion object {}
 }
