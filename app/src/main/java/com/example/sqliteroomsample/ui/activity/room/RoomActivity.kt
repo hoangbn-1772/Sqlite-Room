@@ -1,9 +1,11 @@
 package com.example.sqliteroomsample.ui.activity.room
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +15,8 @@ import com.example.sqliteroomsample.ui.adapter.UserAdapter
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
 import kotlinx.android.synthetic.main.activity_room.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.OffsetDateTime
+import java.util.*
 
 class RoomActivity : AppCompatActivity(), OnClickListener {
 
@@ -35,6 +39,7 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
         doObserve()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_insert_room -> insertUser()
@@ -69,12 +74,15 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun insertUser() {
         val name = edit_name.text.toString()
         val address = edit_address.text.toString()
 
         if (name.isNotEmpty() && address.isNotEmpty()) {
-            this.user = User(name = name, address = address)
+            val time = OffsetDateTime.now()
+//            val time = Date().time
+            this.user = User(name = name, address = address, joined_date = time)
             this.user?.let { viewModel.insertUser(it) }
 
             edit_name.text?.clear()

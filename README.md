@@ -57,6 +57,37 @@
 - Để cập nhật database lên version mới nhất là viết câu lệnh SQL và thực hiện câu lệnh trong hàm *onUpgrade()* để lấy dữ liệu cũ rồi cập nhật vào bảng mới.
 - Việc cập nhật sẽ được thực hiện thủ công đối với từng version
 
+### Transaction SQLite
+- Là một tiến trình thực hiện một nhóm các câu lệnh SQL, các câu lệnh được thực thi một cách tuần tự và độc lập.
+- Điều quan trọng là kiểm soát Transaction để đảm bảo tính toàn vẹn của dữ liệu và xử lý khi xảy ra lỗi.
+- Các thuộc tính của Transaction: 4 thuộc tính viết tắt ACID
+	+ Atomicity: Đảm bảo rằng tất cả các họat động trong đơn vị công việc được hoàn thành một cách thành công. Nếu không, transaction bị hủy bỏ tại thời điểm thất bại và các hoạt động trở về trạng thái cũ.
+	+ Consistency: Đảm bảo CSDL thay đổi chính xác trạng thái khi transaction được commit thành công.
+	+ Isolation: Các transaction hoạt động độc lập và không liên quan đến nhau.
+	+ Durability: Đảm bảo rằng kết quả hoặc tác động của transaction đã commit vẫn tồn tại trong trường hợp lỗi hệ thống.
+- Điều khiển transaction trong SQLite:
+	+ BEGIN TRANSACTION: Bắt đầu 1 transaction
+	+ COMMIT (END TRANSACTION): Lưu các thay đổi vào CSDL
+	+ ROLLBACK: Hoàn tác các transaction chưa được lưu vào CSDL.
+
+### Limit transaction
+- Giới hạn số lượng insert có thể thực hiện trong 1 transaction là 10 triệu bản ghi.
+### Cải thiện performance với SQLite
+- Sử dụng transaction:
+	<img src="images/performance_transaction.png"/>
+
+- Sử dụng db.execSQL():
+	<img src="images/execSQL_performance.png"/>
+
+- Xem xét sử dụng lại SQLiteStatement trong khi chèn dữ liệu.
+
+- Performance SQLite: https://medium.com/@JasonWyatt/squeezing-performance-from-sqlite-insertions-971aff98eef2
+
+### Nhiều luồng cùng thực hiện truy vấn hoặc cùng thực hiện việc thay đổi database.
+- SQLite cho phép nhiều luồng truy cập cùng một thời điểm, tuy nhiên chỉ có 1 tiến trình có thể thực hiện thay đổi CSDL. SQLite sử dụng cơ chế khóa toàn bộ CSDL (đồng bộ hóa) khi có 1 tiến trình đang thực hiện thao tác với database cho đến khi giao dịch đó thực hiện xong.
+- Từ version 3.7.0, một option mới *Write Ahead Logging* cho phép việc đọc và viết có thể tiến hành đồng thời.
+- SQLite hỗ trợ số lượng truy cập đọc dữ liệu đồng thời không giới hạn
+
 ## Room
 - Room là một phần trong Android Architecture Components được giới thiệu trong Google I/O 2016.
 - Room là Persistence Library cung cấp abstract layer cung cấp cách thức truy cập thao tác với dữ liệu trong CSDL SQLite.
@@ -194,7 +225,35 @@
 <img src="images/multiple_version_increments.png"/>
 
 ### Room và Time
+- Khi lưu trữ dữ liệu, đôi khi bạn cần lưu trữ và truy xuất ngày, giờ. Nhưng Room không cung cấp bất kỳ sự hỗ trợ nào cho điều đó, thay vào đó, nó cung cấp annotation @TypeConverter, cho phép ánh xạ các đối tượng tùy ý cho Room hiểu và ngược lại. Ví dụ:
+	+ Entity: Sử dụng lớp Date
 
+	<img src="images/entity_room_date.png"/>
+
+	+  TypeConverter
+
+	<img src="images/converter_room.png"/>
+
+	+ Cấu hình @TypeConverter trong database
+	
+	<img src="images/typeconverter_date.png"/>
+
+	+ Kết quả:
+	<img src="images/result_room_date.png"/>
+
+- Có 2 vấn đề khi sử dụng đoạn code trên:
+	+ Sử dụng Date (nên tránh trong hầu hết các trường hợp), vấn đề chính với Date thực tế là nó không hỗ trợ múi giờ.
+	+ Giá trị kiểu Long không thể lưu bất kỳ thông tin múi giờ nào.
+- Vì vậy, khi lưu trữ và truy xuất thời gian bạn không thể biết múi giờ từ đâu.
+- Với SQLite, không có lớp lưu trữ được dành riêng để lưu trữ thời gian, thay vào đó nó được lưu trữ dưới dạng TEXT, REAL, INTEGER với độ chính xác cao, đặc biêt là sử dụng kiểu TEXT vì nó hỗ trợ các chuỗi ISO 8601. Do đó, chỉ cần lưu trữ các giá trị dưới dạng TEXT với định dạng mong muốn.
+- Áp dụng với Room: Có thể Sử dụng thư viện ThreeTen-BP có hỗ trợ múi giờ. Vì vậy sử dụng một trong các lớp của nó để biểu diễn date+times: OffsetDateTime - lớp này là một đại diện immutable của cả time và date trong một phần bù cụ thể từ UTC/GMT.
+	+ Trong Entity, sử dụng OffsetDateTime thay cho Date.
+	+ TypeConverter
+	<img src="images/typeconverter_offset.png"/>
+	+ Cấu hình lại trong database
+	+ Kết quả:
+	<img src="images/result_offset.png"/>
+- Thay thế mapping giữa Date-Long bằng OffsetDateTime-String. DateTimeFormatter.ISO_OFFSET_DATE_TIME cung cấp 1 định dạng chuỗi chính xác.
 ## Tài liệu tham khảo
 - SQLite:
 - Room:
@@ -202,5 +261,4 @@
 	+ https://medium.com/mindorks/room-kotlin-android-architecture-components-71cad5a1bb35
 	+ Google Sample: https://github.com/googlesamples/android-architecture-components
 	+ Room + Rx: https://medium.com/androiddevelopers/room-rxjava-acb0cd4f3757
-	+ SQLite to Room: https://medium.com/androiddevelopers/7-steps-to-room-27a5fe5f99b2
-	+ https://viblo.asia/p/android-gioi-thieu-room-persistence-library-maGK7zne5j2
+	+ Room + Time: https://medium.com/androiddevelopers/room-time-2b4cf9672b98

@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import androidx.room.Transaction
 import com.example.sqliteroomsample.data.model.sqlite.Employee
 
 class DatabaseHelper private constructor(context: Context) :
