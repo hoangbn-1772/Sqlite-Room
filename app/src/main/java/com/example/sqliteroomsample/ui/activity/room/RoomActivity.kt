@@ -100,7 +100,7 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
 
     private fun updateUser(user: User) {
         when {
-            user.phone.isNotEmpty() -> user.name = ""
+            user.name?.isNotEmpty()!! -> user.name = ""
             else -> user.name = "ABC"
         }
         viewModel.updateUser(user)

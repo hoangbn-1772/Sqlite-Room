@@ -98,8 +98,9 @@
 - Lợi thế của Room
 	+ Kiểm tra @Query và @Entity ở compile-time, ngoài kiểm tra cú pháp nó còn kiểm tra được các trường hợp khác như thiếu bảng.
 	+ Không phải viết các câu lệnh dài để tạo database
+	+ Ánh xạ các đối tượng CSDL sang đối tượng Java mà không cần phải viết code.
 	+ Khi lược đồ CSDL thay đổi không phải cập nhật lại các câu truy vấn SQL thủ công.
-	+ Tích hợp đầy đủ với các thành phần khác trong Architecture components (như LiveData)
+	+ Tích hợp đầy đủ với các thành phần khác trong Architecture components (như LiveData, RxJava)
 
 - Room có 3 thành phần chính:
 

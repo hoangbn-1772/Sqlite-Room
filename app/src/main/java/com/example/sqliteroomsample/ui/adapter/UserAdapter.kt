@@ -56,6 +56,8 @@ class UserAdapter(
                     deleteOnClick(user)
                     removeAt(position)
                 }
+
+                img_update_user.setOnClickListener { updateOnClick(user) }
             }
         }
 
