@@ -21,7 +21,7 @@
 	+ Kế thừa class SQLiteOpenHelper (Đây là một class mà Android cho phép bạn xử lý các thao tác với database của SQLite)
 	+ Sau đó cần override lại 2 phương thức: onCreate()-đây là nơi để bạn viết câu lệnh tạo bảng, nó được gọi duy nhất một lần, onUpgrade()-được gọi khi database được nâng cấp.
 
-	<img src=""images/database_helper.png/>
+	<img src="images/database_helper.png"/>
 
 - Câu lệnh insert:
 	+ Tạo phương thức tên là *insertEmployee* với tham số truyền vào là employee
