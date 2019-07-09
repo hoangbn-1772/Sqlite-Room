@@ -22,14 +22,16 @@ interface UserDao {
     @Delete
     fun deleteUser(user: User): Single<Int>
 
-    @Query(GET_GENDER_BY_NAME)
+    @Query(GET_USERS_BY_NAME)
     fun getUserByName(name: String): Flowable<MutableList<User>>
 
-    @Query(GET_GENDERS)
+    @Query(GET_USERS)
     fun getUsers(): Flowable<MutableList<User>>
 
     companion object {
-        private const val GET_GENDERS = "SELECT * FROM ${Global.TABLE_USER}"
-        private const val GET_GENDER_BY_NAME = "SELECT * FROM ${Global.TABLE_USER} WHERE name = :name"
+        private const val GET_USERS = "SELECT * FROM ${Global.TABLE_USER}"
+        private const val GET_USERS_BY_NAME = "SELECT * FROM ${Global.TABLE_USER} WHERE name = :name"
+        private const val SORT_USERS_BY_TIME = "SELECT * FROM ${Global.TABLE_USER} ORDER BY datetime(joined_date)"
+        private const val GET_USER_NAME = "SELECT name, joined_date FROM ${Global.TABLE_USER}"
     }
 }

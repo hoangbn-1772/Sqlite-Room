@@ -17,18 +17,24 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
     val users: ArrayList<User> = ArrayList()
 
     private val _insertUserLiveData = MutableLiveData<Long>()
-
     val insertUserLiveData: LiveData<Long>
         get() = _insertUserLiveData
 
     private val _getUserLiveData = MutableLiveData<MutableList<User>>()
-
     val getUserLiveDate: LiveData<MutableList<User>>
         get() = _getUserLiveData
 
     private val _deleteLiveData = MutableLiveData<Int>()
     val deleteLiveData: LiveData<Int>
         get() = _deleteLiveData
+
+    private val _updateUser = MutableLiveData<Boolean>()
+    val updateUser: LiveData<Boolean>
+        get() = _updateUser
+
+    private val _userByTimeLiveDate = MutableLiveData<Boolean>()
+    val userByTimeLiveDate: LiveData<Boolean>
+        get() = _userByTimeLiveDate
 
     fun insertUser(user: User) {
         compositeDisposable.add(
@@ -63,6 +69,22 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
         )
     }
 
+    fun updateUser(user: User) {
+        compositeDisposable.add(
+            repository.updateUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        _updateUser.value = true
+                    },
+                    {
+                        _updateUser.value = false
+                    }
+                )
+        )
+    }
+
     fun deleteUser(user: User) {
         compositeDisposable.add(
             repository.deleteUser(user)
@@ -71,12 +93,22 @@ class RoomViewModel(private val repository: UserLocalRepository) : ViewModel() {
                 .subscribe(
                     {
                         _deleteLiveData.value = it
+                        updateUsers(user)
                     },
                     {
                         _deleteLiveData.value = -1
                     }
                 )
         )
+    }
+
+    private fun updateUsers(user: User) {
+        for (i in 0 until this.users.size) {
+            if (user.id == this.users[i].id) {
+                users.remove(this.users[i])
+                break
+            }
+        }
     }
 
     override fun onCleared() {

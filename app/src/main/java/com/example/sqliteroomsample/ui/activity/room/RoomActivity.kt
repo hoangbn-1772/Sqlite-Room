@@ -15,6 +15,8 @@ import com.example.sqliteroomsample.ui.adapter.UserAdapter
 import com.example.sqliteroomsample.util.ContextExtension.showMessage
 import kotlinx.android.synthetic.main.activity_room.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -44,17 +46,15 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
         when (v?.id) {
             R.id.btn_insert_room -> insertUser()
             R.id.btn_get_users -> getUsers()
+            R.id.btn_get_users_by_time -> getUsersByTime()
         }
     }
 
     private fun initComponent() {
         btn_insert_room?.setOnClickListener(this)
         btn_get_users.setOnClickListener(this)
-
-        recycler_users?.apply {
-            layoutManager = LinearLayoutManager(this@RoomActivity)
-            adapter = userAdapter
-        }
+        btn_get_users_by_time.setOnClickListener(this)
+        setupUsers()
     }
 
     private fun doObserve() {
@@ -62,15 +62,21 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
             if (rowId != -1L) {
                 this.user?.let { viewModel.users.add(it) }
             }
+            user = null
         })
 
         viewModel.getUserLiveDate.observe(this, Observer {
             viewModel.users.removeAll(viewModel.users)
             viewModel.users.addAll(it)
+            setupUsers()
         })
 
         viewModel.deleteLiveData.observe(this, Observer { rowId ->
             showMessage(rowId.toString())
+        })
+
+        viewModel.updateUser.observe(this, Observer {
+            showMessage(it.toString())
         })
     }
 
@@ -80,8 +86,10 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
         val address = edit_address.text.toString()
 
         if (name.isNotEmpty() && address.isNotEmpty()) {
-            val time = OffsetDateTime.now()
-//            val time = Date().time
+//            val time = OffsetDateTime.now()
+//            val time = DateFormat.getDateTimeInstance() as SimpleDateFormat
+//            time.applyPattern(DATE_TIME_FORMAT)
+            val time = Date()
             this.user = User(name = name, address = address, joined_date = time)
             this.user?.let { viewModel.insertUser(it) }
 
@@ -91,7 +99,11 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
     }
 
     private fun updateUser(user: User) {
-
+        when {
+            user.phone.isNotEmpty() -> user.name = ""
+            else -> user.name = "ABC"
+        }
+        viewModel.updateUser(user)
     }
 
     private fun deleteUser(user: User) {
@@ -100,5 +112,21 @@ class RoomActivity : AppCompatActivity(), OnClickListener {
 
     private fun getUsers() {
         viewModel.getUser()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getUsersByTime() {
+        val time = OffsetDateTime.now()
+    }
+
+    private fun setupUsers() {
+        recycler_users?.apply {
+            layoutManager = LinearLayoutManager(this@RoomActivity)
+            adapter = userAdapter
+        }
+    }
+
+    companion object {
+        private const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
     }
 }

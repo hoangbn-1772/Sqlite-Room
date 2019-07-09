@@ -11,10 +11,10 @@ import com.example.sqliteroomsample.data.local.dao.UserDao
 import com.example.sqliteroomsample.data.model.room.User
 import com.example.sqliteroomsample.util.Converters
 import com.example.sqliteroomsample.util.Global
-import com.example.sqliteroomsample.util.TiviTypeConverters
+import com.example.sqliteroomsample.util.TimestampConverter
 
 @Database(entities = [User::class], version = AppRoomDatabase.DATABASE_VERSION)
-@TypeConverters(TiviTypeConverters::class)
+@TypeConverters(Converters::class)
 abstract class AppRoomDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao

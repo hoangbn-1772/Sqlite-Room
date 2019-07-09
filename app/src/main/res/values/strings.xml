@@ -15,4 +15,5 @@
     <!--Room-->
     <string name="room_btn_insert">Insert User</string>
     <string name="room_btn_get">Get Users</string>
+    <string name="room_btn_get_user_by_time">Get Users By Time</string>
 </resources>

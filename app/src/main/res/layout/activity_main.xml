@@ -21,4 +21,11 @@
         android:layout_below="@id/btn_test_sqlite"
         android:text="@string/demo_room"/>
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_Date_Time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"/>
+
 </RelativeLayout>

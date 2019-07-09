@@ -14,6 +14,7 @@
 - Ví dụ: Lưu trữ thông tin nhân viên của công ty gồm các thuộc tính: id, tên, địa chỉ, số điện thoại.
 
 - Tạo class Employee:
+
 	<img src="images/employee.png"/>
 
 - Tạo class DatabaseHelper:
@@ -74,9 +75,11 @@
 - Giới hạn số lượng insert có thể thực hiện trong 1 transaction là 10 triệu bản ghi.
 ### Cải thiện performance với SQLite
 - Sử dụng transaction:
+
 	<img src="images/performance_transaction.png"/>
 
 - Sử dụng db.execSQL():
+
 	<img src="images/execSQL_performance.png"/>
 
 - Xem xét sử dụng lại SQLiteStatement trong khi chèn dữ liệu.
@@ -104,7 +107,7 @@
 
 	+ Database: Được chú thích bởi annotated @Database, là một đối tượng giữ kết nối với SQLite DB và tất cả các hoạt động được thực hiện thông qua nó.
 	+ Entity: Đại diện cho 1 bảng trong database. Chú thích bằng annotated @Entity
-	+ DAO: Là một Interface chứa các phương thức để truy cập vào database. Được chú thích bằng @Dao
+	+ DAO: Là một lớp trừu tượng chứa các phương thức để truy cập vào database. Được chú thích bằng @Dao
 
 ### Ví dụ: Lưu trữ thông tin của user
 
@@ -118,7 +121,8 @@
 - Các Entity có thể có các hàm khởi đầy đủ hoặc rỗng, Room có thể sử dụng các hàm khởi tạo đầy đủ hoặc một phần.
 
 - User.kt:
-	<img src="images/user_entities.png"/>
+
+	<img src="images/entity_room_date.png"/>
 
 	+ annotation *@PrimaryKey(autoGenerate = true)*: chỉ ra đây là khóa chính và sẽ tự động tăng.
 	+ Mặc định, Room sử dụng tên các trường làm tên cột, nếu muốn đặt tên cột khác ta sử dụng annotation *@ColumnInfo*
@@ -133,6 +137,7 @@
 - Một *DAO* có thể được thể hiện như một *interface* hoặc *abstract*
 - Khi code được sinh ra ở thời điểm compile-time thì Room sẽ tạo một implementation của class này.
 - UserDao.kt
+
 	<img src="images/user_dao.png"/>	
 	
 	+ Các hàm được chú thích bởi *@Insert*, *@Update*, *@Delete* nhận một instance của lớp cần thiết làm tham số, đại diện cho đối tượng mà chúng ta muốn muốn insert, update hoặc delete.
@@ -241,19 +246,6 @@
 	+ Kết quả:
 	<img src="images/result_room_date.png"/>
 
-- Có 2 vấn đề khi sử dụng đoạn code trên:
-	+ Sử dụng Date (nên tránh trong hầu hết các trường hợp), vấn đề chính với Date thực tế là nó không hỗ trợ múi giờ.
-	+ Giá trị kiểu Long không thể lưu bất kỳ thông tin múi giờ nào.
-- Vì vậy, khi lưu trữ và truy xuất thời gian bạn không thể biết múi giờ từ đâu.
-- Với SQLite, không có lớp lưu trữ được dành riêng để lưu trữ thời gian, thay vào đó nó được lưu trữ dưới dạng TEXT, REAL, INTEGER với độ chính xác cao, đặc biêt là sử dụng kiểu TEXT vì nó hỗ trợ các chuỗi ISO 8601. Do đó, chỉ cần lưu trữ các giá trị dưới dạng TEXT với định dạng mong muốn.
-- Áp dụng với Room: Có thể Sử dụng thư viện ThreeTen-BP có hỗ trợ múi giờ. Vì vậy sử dụng một trong các lớp của nó để biểu diễn date+times: OffsetDateTime - lớp này là một đại diện immutable của cả time và date trong một phần bù cụ thể từ UTC/GMT.
-	+ Trong Entity, sử dụng OffsetDateTime thay cho Date.
-	+ TypeConverter
-	<img src="images/typeconverter_offset.png"/>
-	+ Cấu hình lại trong database
-	+ Kết quả:
-	<img src="images/result_offset.png"/>
-- Thay thế mapping giữa Date-Long bằng OffsetDateTime-String. DateTimeFormatter.ISO_OFFSET_DATE_TIME cung cấp 1 định dạng chuỗi chính xác.
 ## Tài liệu tham khảo
 - SQLite:
 - Room:
